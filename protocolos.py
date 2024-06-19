@@ -44,7 +44,7 @@ def lanzamientoDeMoneda(n, AliceMiente):
         basesBob.append(i[3])
         lecturasBob.append(i[2])
     
-    #qc.draw('latex', filename='../CoinTossing2.png',cregbundle=False, reverse_bits=True, plot_barriers=False, initial_state=True)
+    #qc.draw('latex', filename='CoinTossing2.png',cregbundle=False, reverse_bits=True, plot_barriers=False, initial_state=True)
     
     #-----------------------------------------
     #---------------------- Bob crea las tablas y decide que base cree que utilizó Alice
@@ -104,7 +104,7 @@ def bb84(n, intruso):
     listaComparacionesBases = []
     keyAlice = []
     keyBob = []
-    listaIndicesBitsComparar= []
+    listaIndicesBitsComparar = []
     result = []
     
     if(intruso == 1):
@@ -118,23 +118,24 @@ def bb84(n, intruso):
     if(intruso == 1):    # Si hay intruso necesitamos mas registros
         q=QuantumRegister(4)
         e=ClassicalRegister(2, "Eva")
-        qc=QuantumCircuit(q,b,e,a)
+        qc=QuantumCircuit(q,a,e,b)
     else:   # Si no hay intruso necesitamos menos registros
         q=QuantumRegister(3)   
-        qc=QuantumCircuit(q,b,a)
+        qc=QuantumCircuit(q,a,b)
       
     qc.h(q[0])
-    qc.measure(q[0],a[1]) #Bit aleatorio de Alice
+    qc.measure(q[0],a[0]) #Bit aleatorio de Alice
     qc.h(q[1])
-    qc.measure(q[1],a[0]) #Base aleatoria de Alice
-    qc.append(HGate(), [q[0]]).c_if(a[0],1) #Aplicación de la base de Alice
+    qc.measure(q[1],a[1]) #Base aleatoria de Alice
+    qc.append(HGate(), [q[0]]).c_if(a[1],1) #Aplicación de la base de Alice
 
     if intruso == 1:
         qc.h(q[3])
         qc.measure(q[3],e[0]) #Base aleatoria de Eva
         qc.append(HGate(), [q[0]]).c_if(e[0],1) #Aplicación de la base de Eva
-        
+
         qc.measure(q[0],e[1]) #Bit medido por Eva
+        qc.append(HGate(), [q[0]]).c_if(e[0],1) #Eva intenta propagar el estado que recibió
     qc.h(q[2])  
     qc.measure(q[2],b[0]) #Base aleatoria de Bob 
     
@@ -152,16 +153,16 @@ def bb84(n, intruso):
     
     if(intruso == 1):
         for i in str(qjob.result().get_memory()).replace('[', '').replace(']', '').replace(' ','').split(','):
-            basesAlice.append(i[6])
-            bitsA.append(i[5])
+            bitsA.append(i[6])
+            basesAlice.append(i[5])
             basesEva.append(i[4])
             listEva.append(i[3])
             basesBob.append(i[2])
             lecturasBob.append(i[1])
     else:
         for i in str(qjob.result().get_memory()).replace('[', '').replace(']', '').replace(' ','').split(','):
-            basesAlice.append(i[4])
-            bitsA.append(i[3])
+            bitsA.append(i[4])
+            basesAlice.append(i[3])
             basesBob.append(i[2])
             lecturasBob.append(i[1])
     #-----------------------------------------
@@ -189,7 +190,7 @@ def bb84(n, intruso):
     keyDefinitivaAlice = keyAlice.copy()
     keyDefinitivaBob = keyBob.copy()
     
-    for i in range(0,round((len(keyAlice)/2))):
+    for i in range(0,math.ceil((len(keyAlice)/2))):
         
         #Implementación cuántica de la elección aleatoria de los bits
         #indice = listaIndicesPosibles[getNumeroAleatorio(0, len(listaIndicesPosibles)-1)]
@@ -210,7 +211,7 @@ def bb84(n, intruso):
         keyDefinitivaBob.pop(i)
         
     #-----------------------------------------
-    #qc.draw('latex', filename='../BB84ConIntruso.png',cregbundle=False, reverse_bits=True, plot_barriers=False, initial_state=True)
+    #qc.draw('latex', filename='BB84.png',cregbundle=False, reverse_bits=True, plot_barriers=False, initial_state=True)
     
     result.append(bitsA)
     result.append(basesAlice)
