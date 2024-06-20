@@ -20,9 +20,9 @@ def DeteccionVariandoN():
     n = n.strip()
     repeticiones = repeticiones.strip()
     
-    if(n.isdigit() == False or int(n) <= 0):
+    if(n.isdigit() == False or int(n) < 4):
         borrarTexto(txt)
-        escribeTexto(txt, "El valor del número de bits debe ser numérico y mayor que 0")
+        escribeTexto(txt, "El valor del número de bits debe ser numérico y mayor o igual que 4")
     else:
         if(repeticiones.isdigit() == False or (int(repeticiones) <= 0)):
             borrarTexto(txt)
@@ -32,6 +32,7 @@ def DeteccionVariandoN():
             repeticiones = int(repeticiones)
             listaN = []
             listaDetecciones = []
+            listaProbabilidad = []
             
             for i in range(0,7):
                 listaN.append(n * 2**i)
@@ -44,15 +45,18 @@ def DeteccionVariandoN():
                         acum += 1
                 listaDetecciones.append(acum)    
             
+            for i in listaN:
+                valor = (1 - (0.75)**(i/4)) * repeticiones
+                listaProbabilidad.append(valor)
+            
             fig, ax = plt.subplots()
-            ax.plot(listaN, listaDetecciones)
+            ax.plot(listaN, listaDetecciones, label="Implementación")
+            ax.plot(listaN, listaProbabilidad, '-.',label="Cálculo teórico")
             ax.set_xlabel("Bits transmitidos", fontdict = {'fontsize':10, 'fontweight':'bold', 'color':'tab:blue'})
             ax.set_ylabel("Detecciones de intruso / "+ str(repeticiones) + " transmisiones", fontdict = {'fontsize':10, 'fontweight':'bold', 'color':'tab:blue'})
             ax.set_yticks(range(0, repeticiones+1, 10))
-            
+            plt.legend()
             plt.savefig('diagramaLineas.png')
-            borrarTexto(txt)
-            escribeTexto(txt, "Se creó el archivo 'diagramaLineas.png'")
 
 def pruebaDeteccionIntruso():
     n = e5.get()
@@ -183,7 +187,7 @@ if __name__ == '__main__':
     notebook.add(frame4, text='Gráfica detecciones')
     labelN4 = Label(frame4, text="N inicial:", font=('Arial', 10))
     labelRepeticiones2= Label(frame4, text="Repeticiones:", font=('Arial', 10))
-    labelRepeticiones3= Label(frame4, text="Se recomienda (N = 2 o 4 y Repeticiones <= 300)", font=('Arial', 10))
+    labelRepeticiones3= Label(frame4, text="Se recomienda (N = 4 y Repeticiones <= 300)", font=('Arial', 10))
     e7 = Entry(frame4)
     e8 = Entry(frame4)
     

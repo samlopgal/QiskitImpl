@@ -35,6 +35,7 @@ def testProbabilidadDeteccionVariandoN(nInicial, repeticiones):
     
     listaN = []
     listaDetecciones = []
+    listaProbabilidad = []
     
     for i in range(0,7):
         listaN.append(nInicial * 2**i)
@@ -47,12 +48,17 @@ def testProbabilidadDeteccionVariandoN(nInicial, repeticiones):
                 acum += 1
         listaDetecciones.append(acum)    
     
+    for i in listaN:
+        valor = (1 - (0.75)**(i/4)) * repeticiones
+        listaProbabilidad.append(valor)
+    
     fig, ax = plt.subplots()
-    ax.plot(listaN, listaDetecciones)
+    ax.plot(listaN, listaDetecciones, label="Implementación")
+    ax.plot(listaN, listaProbabilidad, '-.',label="Cálculo teórico")
     ax.set_xlabel("Bits transmitidos", fontdict = {'fontsize':10, 'fontweight':'bold', 'color':'tab:blue'})
     ax.set_ylabel("Detecciones de intruso / "+ str(repeticiones) + " transmisiones", fontdict = {'fontsize':10, 'fontweight':'bold', 'color':'tab:blue'})
     ax.set_yticks(range(0, repeticiones+1, 10))
-    
+    plt.legend()
     plt.savefig('diagramaLineas.png')
     
     
