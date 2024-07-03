@@ -65,22 +65,35 @@ def lanzamientoDeMoneda(n, AliceMiente):
     if AliceMiente == 1 and aciertaBob:
         mensaje = "Has perdido"
         bitsEnviadosAlice = randomBit(len(bitsAlice))
-    else:    
-        mensaje = "Has ganado"
-        bitsEnviadosAlice = bitsAlice.copy()
+    else:
+        if AliceMiente == 0:
+            if aciertaBob == 1:
+                mensaje = "Has ganado"
+                bitsEnviadosAlice = bitsAlice.copy()
+            else:
+                mensaje = "Has perdido"
+                bitsEnviadosAlice = bitsAlice.copy()
+        else:        
+            if aciertaBob == 0:
+                mensaje = "Has perdido"
+                bitsEnviadosAlice = bitsAlice.copy()
     #----------------------------------------
     #Bob comprueba el resultado
+    noCoincideRectilinea = False
+    noCoincideDiagonal = False
     aliceMintio = False
-    if(baseAlice) == 0:
-        for i in tablaRectilinea:
-            if lecturasBob[i] != bitsEnviadosAlice[i]:
-                aliceMintio = True
-                break;    
-    else:
-        for i in tablaDiagonal:
-            if lecturasBob[i] != bitsEnviadosAlice[i]:
-                aliceMintio = True
-                break;    
+    
+    for i in tablaRectilinea:
+        if lecturasBob[i] != bitsEnviadosAlice[i]:
+            noCoincideRectilinea = True
+            break;    
+    
+    for i in tablaDiagonal:
+        if lecturasBob[i] != bitsEnviadosAlice[i]:
+            noCoincideDiagonal = True
+            break;
+    
+    aliceMintio = noCoincideRectilinea and noCoincideDiagonal
     #----------------------------------------
     result.append(bitsAlice)
     result.append(baseAlice)
